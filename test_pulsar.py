@@ -31,13 +31,10 @@ from enterprise_extensions.sampler import setup_sampler
 from corner import corner
 import numpy as np
 
-from PTMCMCSampler.PTMCMCSampler import PTSampler as ptmcmc
 import bilby
 from bilby.core.result import read_in_result
 
-# using my version of enterprise_warp https://github.com/mattpitkin/enterprise_warp/tree/tm_params
 from enterprise_warp import bilby_warp
-
 
 # use the tim files from wn_sp_tutorial - tim files within the -pta flag
 # do not seem to work with model_singlepsr_noise
@@ -59,51 +56,12 @@ pta = model_singlepsr_noise(
     white_vary=True,  # estimate white noise (this defaults to True anyway)
 )
 
-
-outdir = "test/"
-
-# set up and run PTMCMC sampler
-#sampler = setup_sampler(pta, outdir=outdir, resume=False)
-
-#N = 20000  # number of iterations
-#x0 = np.hstack(p.sample() for p in pta.params)  # initial sample points
-
-# run sampler 
-#sampler.sample(x0, N, SCAMweight=30, AMweight=15, DEweight=50)
-
-# get parameter indices in output chain file
-#i = 0
-#paramidx = []
-#for p in plist:
-#    print(p)
-#    for pn in pta.param_names:
-#        if f"tmparams_{i}" in pn:
-#            print(psr.t2pulsar[p].val)
-#            # get parameter name, index in chain file, mean value from par file, stddev from par file
-#            paramidx.append((p, i, psr.t2pulsar[p].val, psr.t2pulsar[p].err))
-#            i += 1
-#            break
-            
-#print(paramidx)
-
-#samples = np.loadtxt(os.path.join(outdir, "chain_1.txt"))
-
-#nburn = int(samples.shape[0] / 2)
-
-#psamples = []
-#for item in paramidx:
-#    psamp = samples[nburn:, item[1]] * item[3] + item[2]
-#    psamples.append(psamp)
-
-# plot the posteriors on F0 and F1
-#fig = corner(np.array(psamples).T)
-#fig.savefig("testpost.png", dpi=200)
-
 # run using enterprise_warp to access bilby_mcmc
 priors = bilby_warp.get_bilby_prior_dict(pta)
 parameters = dict.fromkeys(priors.keys())
 likelihood = bilby_warp.PTABilbyLikelihood(pta, parameters)
 
+outdir = "test/"
 label = "test_bilby"
 bilby.run_sampler(likelihood=likelihood, priors=priors, outdir=outdir, label=label, sampler="bilby_mcmc", nsamples=1000)
 
