@@ -105,7 +105,7 @@ parameters = dict.fromkeys(priors.keys())
 likelihood = bilby_warp.PTABilbyLikelihood(pta, parameters)
 
 label = "test_bilby"
-#bilby.run_sampler(likelihood=likelihood, priors=priors, outdir=outdir, label=label, sampler="bilby_mcmc", nsamples=1000)
+bilby.run_sampler(likelihood=likelihood, priors=priors, outdir=outdir, label=label, sampler="bilby_mcmc", nsamples=1000)
 
 res = read_in_result(os.path.join(outdir, f"{label}_result.json"))
 
